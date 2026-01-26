@@ -1,0 +1,105 @@
+# DRL 자산배분 모델 설정 (학습 속도 최적화)
+
+# 데이터 설정
+data:
+  path: "data/BBG_data.csv"
+  rolling_window: 52
+  train_ratio: 0.7
+  valid_ratio: 0.15
+  test_ratio: 0.15
+
+# 특징 공학
+feature:
+  normalize: true
+  macro_dim: 17
+  cov_dim: 16
+  total_dim: 33
+
+# 환경 설정
+environment:
+  risk_aversion: 0.5
+  transaction_cost: 0.001
+  entropy_coef: 0.01
+  hhi_coef: 0.01
+  turnover_coef: 0.001
+
+# 모델 아키텍처
+model:
+  use_transformer: true
+  features_dim: 128
+
+transformer:
+  n_heads: 4
+  n_layers: 2
+  dropout: 0.1
+
+mlp:
+  hidden_dims: [256, 128]
+  dropout: 0.1
+
+# 학습 설정
+training:
+  algorithm: "PPO"
+  total_timesteps: 50000
+  learning_rate: 0.0003
+  device: "auto"
+
+  ppo:
+    n_steps: 512
+    batch_size: 64
+    n_epochs: 5
+    gamma: 0.99
+    gae_lambda: 0.95
+    clip_range: 0.2
+    ent_coef: 0.05
+    vf_coef: 0.5
+    max_grad_norm: 0.5
+
+  sac:
+    buffer_size: 50000
+    batch_size: 128
+    tau: 0.005
+    gamma: 0.99
+
+  save_freq: 10000
+  save_path: "models/"
+
+# 백테스팅
+backtesting:
+  rebalancer:
+    min_weight: 0.05
+    max_weight: 0.35
+    trust_region: 0.15
+    action_scaling: 1.5
+  transaction_cost: 0.001
+  rebalance_freq: 4
+  save_results: true
+  results_path: "results/"
+
+# 국면 발견 (PDF: 3~5개 정도)
+clustering:
+  method: "kmeans"
+  n_clusters: 3          # 기본값 3
+  use_states: false      # PDF는 행동 기반 국면이 핵심, 필요시 true
+  find_optimal: true
+  min_clusters: 3
+  max_clusters: 5        # 3~5개 안에서만 선택
+
+  eps: 0.8               # dbscan용 (현재 미사용)
+  min_samples: 15
+  save_plots: true
+  plots_path: "results/plots/"
+
+ensemble:
+  enabled: false
+  n_agents: 3
+  diversity_regularization: 0.1
+
+output:
+  verbose: true
+  tensorboard: false
+  tensorboard_log: "tensorboard/"
+  save_model: true
+  save_results: true
+
+seed: 42
