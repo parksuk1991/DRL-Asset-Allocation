@@ -1,8 +1,5 @@
-## 9️⃣ Production 페이지
-
-### `pages/4_💼_Production.py`
-````python
 """
+경로: pages/4_💼_Production.py
 실무 배포 페이지
 """
 
