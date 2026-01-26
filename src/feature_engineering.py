@@ -1,4 +1,5 @@
 """
+경로: src/feature_engineering.py
 특징 공학 모듈 (Look-Ahead Bias 완전 해결)
 52주 롤링 공분산 행렬 및 상태 변수 생성
 
@@ -197,4 +198,5 @@ if __name__ == "__main__":
     
     print(f"\n=== Look-Ahead Bias Complete Check ===")
     print(f"✅ All features are based on past information only")
+
     print(f"✅ Safe for real-world deployment")
