@@ -10,6 +10,7 @@ import plotly.express as px
 from plotly.subplots import make_subplots
 from typing import Dict
 import os
+import streamlit as st
 
 
 class RegimeVisualizer:
@@ -433,4 +434,5 @@ if __name__ == "__main__":
     print("Example usage:")
     print("  from visualize_regimes import RegimeVisualizer")
     print("  visualizer = RegimeVisualizer(results, labels, dates, returns)")
+
     print("  visualizer.generate_all_visualizations('results/enhanced_plots/')")
