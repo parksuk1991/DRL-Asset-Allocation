@@ -1,4 +1,5 @@
 """
+경로: src/environment.py
 강화학습 환경 정의
 Gymnasium 기반 자산배분 환경
 """
@@ -217,4 +218,5 @@ if __name__ == "__main__":
             break
     
     print(f"\nTotal Reward: {total_reward:.4f}")
+
     print(f"Performance: {env.get_performance_metrics()}")
