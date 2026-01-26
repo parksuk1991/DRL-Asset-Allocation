@@ -1,4 +1,5 @@
 """
+경로: src/data_loader.py
 데이터 로딩 및 전처리 모듈 (벤치마크 수정)
 BBG_data.csv 파일을 읽고 기본적인 전처리를 수행합니다.
 """
@@ -145,4 +146,5 @@ if __name__ == "__main__":
     print("\n=== Data Summary ===")
     print(f"Returns:\n{data['returns'].describe()}")
     print(f"\nMacro:\n{data['macro'].describe()}")
+
     print(f"\nS&P500 Returns:\n{data['sp500_returns'].describe()}")
