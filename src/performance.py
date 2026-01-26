@@ -1,4 +1,5 @@
 """
+경로: src/performance.py
 성과 분석 모듈 (Plotly 인터랙티브 시각화)
 
 개선사항:
@@ -585,5 +586,6 @@ class PerformanceAnalyzer:
             
             metrics_df = pd.DataFrame(metrics_data)
             metrics_df.to_excel(writer, sheet_name="Performance Metrics", index=False)
+
 
         print(f"✓ Excel saved: {save_path}")
