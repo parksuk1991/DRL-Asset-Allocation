@@ -80,7 +80,7 @@ backtesting:
 clustering:
   method: "kmeans"
   n_clusters: 3          # 기본값 3
-  use_states: false      # PDF는 행동 기반 국면이 핵심, 필요시 true
+  use_states: false      # 행동 기반 국면이 핵심, 필요시 true
   find_optimal: true
   min_clusters: 3
   max_clusters: 5        # 3~5개 안에서만 선택
