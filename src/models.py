@@ -1,4 +1,5 @@
 """
+경로: src/models.py
 DRL 모델 정의
 Transformer + MLP 기반 특징 추출기 및 정책/가치 네트워크
 """
@@ -243,4 +244,5 @@ if __name__ == "__main__":
     
     # 정책 kwargs 생성
     policy_kwargs = create_policy_kwargs(use_transformer=True)
+
     print(f"\nPolicy kwargs: {policy_kwargs}")
