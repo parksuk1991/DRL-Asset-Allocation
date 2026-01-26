@@ -64,7 +64,7 @@ def save_uploaded_file(uploaded_file):
 def get_temp_dir():
     """임시 디렉토리 경로 반환"""
     temp_dir = Path(tempfile.gettempdir()) / "drl_asset_allocation"
-    temp_dir.mkdir(exist_ok=True)
+    temp_dir.mkdir(parents=True, exist_ok=True)
     return temp_dir
 
 
