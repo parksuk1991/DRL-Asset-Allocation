@@ -1,4 +1,5 @@
 """
+경로: src/clustering.py
 사후 국면 발견 (Post-hoc Regime Discovery)
 t-SNE + K-Means 기반 국면 발견 + Plotly 시각화 + 엑셀 저장
 """
@@ -390,4 +391,5 @@ class RegimeDiscovery:
             fig.write_html(save_path)
             print("    ✓ Weight distribution saved")
         
+
         return fig
