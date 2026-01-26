@@ -1,4 +1,5 @@
 """
+경로: src/backtesting.py
 백테스팅 모듈 (타이밍 동기화 수정 - 인덱스 에러 해결)
 
 핵심 수정사항:
@@ -324,4 +325,5 @@ class EnsembleBacktester:
             if "Ratio" in k:
                 print(f"{k:30s}: {v:.3f}")
             else:
+
                 print(f"{k:30s}: {v:.2f}")
