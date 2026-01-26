@@ -42,7 +42,7 @@ class DRLAgent:
         self,
         env,
         algorithm: str = "PPO",
-        policy_kwargs: Optional[Dict] = None,
+        policy_kwargs: Optional[Dict] = None, 
         learning_rate: float = 3e-4,
         device: str = "auto",
         seed: int = 42,
@@ -141,6 +141,7 @@ class DRLAgent:
             total_timesteps=total_timesteps,
             callback=callback,
             progress_bar=False,
+  
         )
 
     def save(self, path: str = "./models/final_model.zip") -> None:
