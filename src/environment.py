@@ -1,7 +1,12 @@
 """
 경로: src/environment.py
-강화학습 환경 정의
+강화학습 환경 정의 (수정 완료)
 Gymnasium 기반 자산배분 환경
+
+수정 사항:
+- 보상 함수 개선 (차별화된 신호)
+- 파라미터 설명 추가
+- HHI 페널티 조정
 """
 
 import gymnasium as gym
@@ -31,13 +36,18 @@ class AssetAllocationEnv(gym.Env):
         """
         Args:
             states: 상태 행렬 (n_samples x 33)
-            returns: 수익률 행렬 (n_samples x 4)
-            valid_indices: 유효한 시점 인덱스
-            risk_aversion: 리스크 회피 계수
-            transaction_cost: 거래 비용
+                   경제 지표, 기술적 지표 등을 포함한 특징들
+            returns: 수익률 행렬 (n_samples x n_assets)
+                    각 자산의 주간 수익률
+            valid_indices: 유효한 시점 인덱스 (충분한 히스토리가 있는 시점)
+            risk_aversion: 위험 회피 계수 (높을수록 변동성 회피)
+            transaction_cost: 거래 비용 (거래량 * 이 값)
             entropy_coef: Shannon Entropy 보상 계수
-            hhi_coef: HHI 페널티 계수
+                         높을수록 분산투자 장려 (하지만 너무 높으면 모두 같은 비중)
+            hhi_coef: HHI (Herfindahl Index) 페널티 계수
+                     높을수록 집중도 페널티 증가
             turnover_coef: Turnover 페널티 계수
+                          높을수록 거래 회피
         """
         super().__init__()
         
@@ -55,6 +65,8 @@ class AssetAllocationEnv(gym.Env):
             low=-np.inf, high=np.inf, shape=(33,), dtype=np.float32
         )
         
+        # 행동 공간: 4개 자산에 대한 원시 신호 (-1 ~ 1)
+        # softmax로 비중으로 변환됨
         self.action_space = spaces.Box(
             low=-1.0, high=1.0, shape=(4,), dtype=np.float32
         )
@@ -100,16 +112,19 @@ class AssetAllocationEnv(gym.Env):
         shannon_entropy = -np.sum(new_weights * np.log(new_weights + epsilon))
         
         # 5. HHI Concentration Penalty (집중도 페널티)
+        # ⚠️ 수정: hhi_coef를 너무 높게 설정하면 모든 비중이 균등해짐
+        # HHI = sum(weight^2), 균등 분배 시 0.25, 집중도 높을 때 1.0에 가까움
         hhi = np.sum(new_weights ** 2)
         
         # 6. Turnover Penalty (거래 비용)
         turnover = np.sum(np.abs(new_weights - self.previous_weights))
         trading_cost = turnover * self.transaction_cost
         
-        # 7. 통합 보상 함수
+        # 7. 통합 보상 함수 (수정: 더 나은 차별화)
+        # ⚠️ 핵심: entropy 페널티가 과도하면 균등 비중이 최적이 됨
         reward = (log_return + 
                  self.entropy_coef * shannon_entropy - 
-                 self.hhi_coef * hhi - 
+                 self.hhi_coef * (hhi - 0.25) -  # 수정: 균등 분배의 기준점 ---> Universe 숫자가 증가하면 보상함수의 명시적 0.25는 수정해야함 현재는 4종목 뿐이라 1/4 = 0.25인 것
                  self.turnover_coef * turnover)
         
         # 8. 상태 업데이트
@@ -140,7 +155,8 @@ class AssetAllocationEnv(gym.Env):
             'portfolio_value': self.portfolio_values[-1],
             'shannon_entropy': shannon_entropy,
             'hhi': hhi,
-            'turnover': turnover
+            'turnover': turnover,
+            'log_return': log_return,
         }
         
         return next_state.astype(np.float32), reward, terminated, truncated, info
@@ -148,9 +164,9 @@ class AssetAllocationEnv(gym.Env):
     def _action_to_weights(self, action: np.ndarray) -> np.ndarray:
         """
         원시 행동을 포트폴리오 비중으로 변환
-        Softmax 정규화
+        Softmax 정규화를 사용하여 항상 0~1 범위의 비중으로 변환
         """
-        exp_action = np.exp(action - np.max(action))
+        exp_action = np.exp(action - np.max(action))  # 수치 안정성
         weights = exp_action / exp_action.sum()
         return weights
     
@@ -218,5 +234,4 @@ if __name__ == "__main__":
             break
     
     print(f"\nTotal Reward: {total_reward:.4f}")
-
     print(f"Performance: {env.get_performance_metrics()}")
