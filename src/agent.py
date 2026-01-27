@@ -124,7 +124,7 @@ class DRLAgent:
                 # ent_coef: A2C의 핵심 문제! 이 값이 높으면 비중이 균등해짐
                 # ⚠️ 수정: 0.1 → 0.001 (큰 폭 감소!)
                 # 엔트로피 페널티가 너무 높으면 모든 포트폴리오가 균등 비중이 됨
-                ent_coef=0.001,
+                ent_coef=0.0005,
                 # vf_coef: 가치 함수 손실 가중치
                 vf_coef=0.5,
                 # use_rms_prop: RMSprop 옵티마이저 사용 여부
