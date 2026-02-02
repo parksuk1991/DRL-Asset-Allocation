@@ -191,13 +191,11 @@ class AssetAllocationEnv(gym.Env):
         }
     
     def _calculate_max_drawdown(self, values: np.ndarray) -> float:
-        """최대 낙폭 계산"""
         peak = np.maximum.accumulate(values)
         drawdown = (values - peak) / peak
         return np.min(drawdown) * 100
     
     def render(self):
-        """환경 시각화 (선택사항)"""
         if len(self.portfolio_values) > 1:
             print(f"Step: {self.current_step}, "
                   f"Portfolio Value: {self.portfolio_values[-1]:.4f}, "
@@ -220,7 +218,7 @@ if __name__ == "__main__":
     
     env = AssetAllocationEnv(states, data['returns'].values, valid_indices)
     
-    # 랜덤 에피소드 실행
+    # 랜덤 에피소드
     obs, info = env.reset()
     done = False
     total_reward = 0
@@ -235,3 +233,4 @@ if __name__ == "__main__":
     
     print(f"\nTotal Reward: {total_reward:.4f}")
     print(f"Performance: {env.get_performance_metrics()}")
+
