@@ -44,7 +44,7 @@ class TransformerFeatureExtractor(BaseFeaturesExtractor):
             nn.Dropout(dropout)
         )
         
-        # 공분산 행렬 임베딩 (4x4 구조 활용)
+        # 공분산 행렬 임베딩 (4x4 구조)
         self.cov_embedding = nn.Sequential(
             nn.Linear(self.cov_dim, 64),
             nn.LayerNorm(64),
@@ -80,7 +80,7 @@ class TransformerFeatureExtractor(BaseFeaturesExtractor):
         Returns:
             features: (batch_size, features_dim) 특징 벡터
         """
-        # 매크로와 공분산 분리
+        # 매크로 & 공분산 분리
         macro = observations[:, :self.macro_dim]
         cov = observations[:, self.macro_dim:]
         
@@ -97,7 +97,7 @@ class TransformerFeatureExtractor(BaseFeaturesExtractor):
         # 평균 풀링
         pooled = transformer_output.mean(dim=1)  # (batch, 64)
         
-        # 결합 및 최종 출력
+        # 결합 최종 결과
         combined = torch.cat([macro_emb, cov_emb], dim=1)  # (batch, 128)
         features = self.output_layer(combined)
         
@@ -106,7 +106,7 @@ class TransformerFeatureExtractor(BaseFeaturesExtractor):
 
 class MLPFeatureExtractor(BaseFeaturesExtractor):
     """
-    단순 MLP 기반 특징 추출기 (비교 실험용)
+    단순 MLP 기반
     """
     
     def __init__(self, 
@@ -246,3 +246,4 @@ if __name__ == "__main__":
     policy_kwargs = create_policy_kwargs(use_transformer=True)
 
     print(f"\nPolicy kwargs: {policy_kwargs}")
+
